@@ -1,0 +1,91 @@
+DAX Formulas for KPIs
+1️⃣ AI Adoption Rate by Industry (%)
+
+Formula:
+
+AI Adoption Rate (%) = 
+DIVIDE(
+    CALCULATE(COUNTROWS(Original_dataset), Original_dataset[AI_Adoption] IN {"Medium","High"}),
+    COUNTROWS(Original_dataset)
+) * 100
+
+
+Description:
+Calculates the percentage of jobs with Medium or High AI Adoption out of total jobs.
+Usage: Add as a measure in Power Pivot. Place Industry in rows, and this measure in Values to see adoption rate by industry.
+
+2️⃣ Average Salary by Automation Risk Level
+
+Formula:
+
+Avg Salary by Risk = 
+AVERAGEX(
+    VALUES(Original_dataset[Automation_Risk_Level]),
+    CALCULATE(AVERAGE(Original_dataset[Salary]))
+)
+
+
+Description:
+Compares average salary across Low, Medium, and High automation risk job groups.
+Usage: Place Automation Risk Level in Rows, and this measure in Values.
+
+3️⃣ Risk-Adjusted Salary Index
+
+Formula:
+
+Risk Adjusted Salary = 
+AVERAGEX(
+    Original_dataset,
+    Original_dataset[Salary] * (1 - (Original_dataset[Automation_Risk_Score] / 3))
+)
+
+
+Description:
+Adjusts salaries by reducing them based on automation risk. Helps measure the long-term sustainable salary value of jobs.
+Usage: Add as a measure in Power Pivot, then compare across industries or roles.
+
+4️⃣ Projected High-Growth Roles (%)
+
+Formula:
+
+High Growth Roles (%) = 
+DIVIDE(
+    CALCULATE(COUNTROWS(Original_dataset), Original_dataset[Job_Growth] = "Growth"),
+    COUNTROWS(Original_dataset)
+) * 100
+
+
+Description:
+Shows what percentage of jobs are projected to grow in the future. Helps identify future-proof careers.
+Usage: Use as a KPI card or in Pivot with Job Category/Industry in rows.
+
+5️⃣ Top 5 Skills in High-Adoption, High-Salary Jobs
+
+Formula (Step 1 – High Salary Median Reference):
+
+Median Salary = MEDIAN(Original_dataset[Salary])
+
+
+Formula (Step 2 – Filter for High-Adoption, High-Salary):
+
+High Adoption High Salary Jobs = 
+FILTER(
+    Original_dataset,
+    Original_dataset[AI_Adoption] = "High" &&
+    Original_dataset[Salary] > [Median Salary]
+)
+
+
+Formula (Step 3 – Skill Frequency):
+
+Top Skills = 
+SUMMARIZE(
+    [High Adoption High Salary Jobs],
+    Original_dataset[Skill],
+    "Skill Count", COUNTROWS(Original_dataset)
+)
+
+
+Description:
+Filters dataset for High AI Adoption + Above Median Salary jobs, then counts frequency of skills to find Top 5 in-demand skills.
+Usage: Create a Pivot with Skill in Rows and Skill Count in Values → sort descending → take top 5.
